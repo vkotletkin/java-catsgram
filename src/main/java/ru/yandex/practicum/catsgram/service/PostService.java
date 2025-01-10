@@ -7,6 +7,7 @@ import ru.yandex.practicum.catsgram.model.Post;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,8 +20,25 @@ public class PostService {
         this.userService = userService;
     }
 
-    public Collection<Post> findAll() {
-        return posts.values();
+    public Collection<Post> findAll(Long from, Long size, String sort) {
+        if (sort.equals("asc")) {
+            return posts.keySet()
+                    .stream()
+                    .map(posts::get)
+                    .filter(k -> k.getId() > from)
+                    .sorted(Comparator.comparing(Post::getPostDate))
+                    .limit(size)
+                    .toList();
+        } else if (sort.equals("desc")) {
+            return posts.keySet()
+                    .stream()
+                    .map(posts::get)
+                    .sorted(Comparator.comparing(Post::getPostDate).reversed())
+                    .limit(size)
+                    .toList();
+        } else {
+            return null;
+        }
     }
 
     public Post create(Post post) {
