@@ -1,19 +1,13 @@
 package ru.yandex.practicum.catsgram.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.DuplicatedDataException;
+import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.model.User;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -56,6 +50,10 @@ public class UserService {
         }
     }
 
+    public Optional<Long> findUserById(Long id) {
+        return users.containsKey(id) ? Optional.of(id) : Optional.empty();
+    }
+
     private boolean isNullUserFields(User user) {
         return user.getEmail() == null || user.getId() == null || user.getPassword() == null;
     }
@@ -63,6 +61,10 @@ public class UserService {
     private boolean isEmailExist(User user) {
         return users.values().stream()
                 .anyMatch(item -> !Objects.equals(item.getId(), user.getId()) && item.getEmail().equals(user.getEmail()));
+    }
+
+    public User findById(Long id) {
+        return users.get(id);
     }
 
     private long getNextId() {

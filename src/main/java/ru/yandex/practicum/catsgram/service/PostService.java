@@ -13,6 +13,11 @@ import java.util.Map;
 @Service
 public class PostService {
     private final Map<Long, Post> posts = new HashMap<>();
+    private final UserService userService;
+
+    public PostService(UserService userService) {
+        this.userService = userService;
+    }
 
     public Collection<Post> findAll() {
         return posts.values();
@@ -21,6 +26,10 @@ public class PostService {
     public Post create(Post post) {
         if (post.getDescription() == null || post.getDescription().isBlank()) {
             throw new ConditionsNotMetException("Описание не может быть пустым");
+        }
+
+        if (userService.findUserById(post.getAuthorId()).isEmpty()) {
+            throw new ConditionsNotMetException(String.format("Автор с id %d не найден", post.getAuthorId()));
         }
 
         post.setId(getNextId());
@@ -42,6 +51,10 @@ public class PostService {
             return oldPost;
         }
         throw new NotFoundException("Пост с id = " + newPost.getId() + " не найден");
+    }
+
+    public Post findById(Long id) {
+        return posts.get(id);
     }
 
     private long getNextId() {

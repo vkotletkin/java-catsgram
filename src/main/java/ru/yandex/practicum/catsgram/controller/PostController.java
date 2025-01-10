@@ -31,4 +31,9 @@ public class PostController {
         return postService.update(newPost);
     }
 
+    @GetMapping("/{id}")
+    public Post findById(@PathVariable Long id) {
+        return postService.findById(id);
+    }
+
 }

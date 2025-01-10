@@ -32,4 +32,9 @@ public class UserController {
         return userService.update(user);
     }
 
+    @GetMapping("/{id}")
+    public User findById(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+
 }
